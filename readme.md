@@ -41,19 +41,42 @@ This project uses computer vision to track hand movements and send the data via 
    python oschandcontrol.py
    ```
 
-4. The script will open a window showing the webcam feed with hand tracking overlay.
+4. A window titled "Camera Selection" will open.
 
-5. Press 'Esc' to exit the program.
+5. Select your desired camera from the dropdown menu.
+
+6. Click the "Start" button to begin hand tracking.
+
+7. A new window showing the webcam feed with hand tracking overlay will open.
+
+8. To switch cameras, select a different camera from the dropdown and click "Start" again.
+
+9. Press 'Esc' in the hand tracking window to stop the current tracking session.
 
 ## OSC Messages
 
-The script sends two OSC messages:
+The script sends four OSC messages:
 
-- `/hand/distance`: A float value between 0 and 1 representing how open the hand is.
-- `/hand/rotation`: A float value between 0 and 1 representing the angle of the hand (0 is horizontal, 1 is vertical).
+- `/hand/distance1`: A float value between 0 and 1 representing how open the hand is (thumb to index finger).
+- `/hand/rotation1`: A float value between 0 and 1 representing the angle of the hand (thumb to index finger).
+- `/hand/distance2`: A float value between 0 and 1 representing how open the hand is (thumb to pinky finger).
+- `/hand/rotation2`: A float value between 0 and 1 representing the angle of the hand (thumb to pinky finger).
 
 ## Troubleshooting
 
-- If the script can't access your webcam, try changing the camera index in the line `cap = cv2.VideoCapture(4)` to a different number (usually 0 or 1).
+- The script can be temperamental depending on the video device. If you encounter issues, don't be afraid to restart the entire script.
+- If a camera doesn't work, try selecting a different one from the dropdown menu.
 - Make sure you have the necessary permissions to access your webcam.
+- If the hand tracking window doesn't appear, check if it's hidden behind other windows.
+- Ensure proper lighting conditions for better hand detection.
 
+## Note on Video Devices
+
+The behavior of video devices can vary depending on your system and the specific cameras you're using. If you experience any issues:
+
+1. Try restarting the script.
+2. Experiment with different cameras if you have multiple options.
+3. Ensure no other applications are currently using the camera you're trying to access.
+4. If problems persist, try rebooting your computer to reset all camera connections.
+
+Remember, patience may be required when working with video inputs, as they can sometimes be finicky.
