@@ -66,6 +66,13 @@ def start_hand_tracking(camera_index):
             remapped = (distance - min_distance) / (max_distance - min_distance)
             return max(0, min(remapped, 1))
 
+        def remap_angle(angle):
+            deadzone = 30
+            if angle < deadzone:
+                return 0
+            else:
+                return min((angle - deadzone) / (90 - deadzone), 1)
+
         while running:
             success, img = cap.read()
             if not success:
@@ -99,8 +106,8 @@ def start_hand_tracking(camera_index):
                     dx2, dy2 = pinky.x - thumb.x, pinky.y - thumb.y
                     angle1 = math.degrees(math.atan2(abs(dy1), abs(dx1)))
                     angle2 = math.degrees(math.atan2(abs(dy2), abs(dx2)))
-                    normalized_angle1 = angle1 / 90
-                    normalized_angle2 = angle2 / 90
+                    normalized_angle1 = remap_angle(angle1)
+                    normalized_angle2 = remap_angle(angle2)
 
                     if relative_distance1 > max_relative_distance1:
                         max_relative_distance1 = relative_distance1
@@ -113,11 +120,12 @@ def start_hand_tracking(camera_index):
                 remapped_distance1 = remap_distance(max_relative_distance1)
                 remapped_distance2 = remap_distance(max_relative_distance2)
                 
-                osc_client.send_message("/hand/distance1", remapped_distance1)
-                osc_client.send_message("/hand/rotation1", max_normalized_angle1)
-                osc_client.send_message("/hand/distance2", remapped_distance2)
-                osc_client.send_message("/hand/rotation2", max_normalized_angle2)
-
+                # Override rotation values if distance is 0
+                if remapped_distance1 == 0:
+                    max_normalized_angle1 = 0
+                if remapped_distance2 == 0:
+                    max_normalized_angle2 = 0
+                
                 thumb_point = (int(max_hand[0][0] * frame_width), int(max_hand[0][1] * frame_height))
                 index_point = (int(max_hand[1][0] * frame_width), int(max_hand[1][1] * frame_height))
                 pinky_point = (int(max_hand[2][0] * frame_width), int(max_hand[2][1] * frame_height))
@@ -128,6 +136,19 @@ def start_hand_tracking(camera_index):
                 cv2.putText(img, f'Angle1: {max_normalized_angle1:.2f}', (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 cv2.putText(img, f'Dist2: {remapped_distance2:.2f}', (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
                 cv2.putText(img, f'Angle2: {max_normalized_angle2:.2f}', (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            else:
+                remapped_distance1 = 0
+                remapped_distance2 = 0
+                max_normalized_angle1 = 0
+                max_normalized_angle2 = 0
+                
+                cv2.putText(img, 'No hand detected', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+            # Send OSC messages (now outside the if max_hand block)
+            osc_client.send_message("/hand/distance1", remapped_distance1)
+            osc_client.send_message("/hand/rotation1", max_normalized_angle1)
+            osc_client.send_message("/hand/distance2", remapped_distance2)
+            osc_client.send_message("/hand/rotation2", max_normalized_angle2)
 
             cv2.imshow("Hand Tracking", img)
 
