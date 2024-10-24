@@ -9,20 +9,17 @@ This project uses computer vision to track hand movements and send the data via 
 
 ## Installation
 
-1. Clone this repository:
-   ```
+1. **Download and Install Python:**
+   - Ensure you have Python 3.7 or higher installed on your system. You can download it from the [official Python website](https://www.python.org/downloads/).
+
+2. **Clone this repository:**
+   ```bash
    git clone https://github.com/yourusername/hand-tracking-osc.git
    cd hand-tracking-osc
    ```
 
-2. Create a virtual environment (optional but recommended):
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
-
-3. Install the required packages:
-   ```
+3. **Install the required packages:**
+   ```bash
    pip install -r requirements.txt
    ```
 
@@ -30,28 +27,22 @@ This project uses computer vision to track hand movements and send the data via 
 
 1. Make sure your webcam is connected and working.
 
-2. Open the `oschandcontrol.py` file and modify the following line to set your desired IP address and port:
-   ```python
-   osc_client = udp_client.SimpleUDPClient("127.0.0.1", 4567)
-   ```
-   Replace "127.0.0.1" with your target IP address (use "127.0.0.1" for localhost) and 4567 with your desired port number.
-
-3. Run the script:
-   ```
+2. Run the script:
+   ```bash
    python oschandcontrol.py
    ```
 
-4. A window titled "Camera Selection" will open.
+3. A window titled "Camera Selection" will open.
 
-5. Select your desired camera from the dropdown menu.
+4. Select your desired camera from the dropdown menu.
 
-6. Click the "Start" button to begin hand tracking.
+5. Click the "Start" button to begin hand tracking.
 
-7. A new window showing the webcam feed with hand tracking overlay will open.
+6. A new window showing the webcam feed with hand tracking overlay will open.
 
-8. To switch cameras, select a different camera from the dropdown and click "Start" again.
+7. To switch cameras, select a different camera from the dropdown and click "Start" again.
 
-9. Press 'Esc' in the hand tracking window to stop the current tracking session.
+8. Press 'Esc' in the hand tracking window to stop the current tracking session.
 
 ## OSC Messages
 
